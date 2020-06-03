@@ -1,10 +1,18 @@
 import React, { Component } from 'react'
-import { View, Text, TouchableOpacity, TextInput, StyleSheet } from 'react-native'
+import { View, Text, TouchableOpacity, TextInput, StyleSheet, Alert, ToastAndroid } from 'react-native'
+import ApiContainer from './ApiContainer'
+import StackNavigator from 'react-navigation';
+import Toast, {DURATION} from 'react-native-easy-toast'
+import {Keyboard} from 'react-native'
 
 class LoginView extends Component {
+   static navigationOptions = {
+    title: 'First',
+  }
    state = {
       email: ' ',
-      password: ' '
+      password: ' ',
+      toast: null
    }
    handleEmail = (text) => {
       this.setState({ email: text })
@@ -22,6 +30,7 @@ class LoginView extends Component {
             loading: true,
 
         })
+        //const {navigate} = this.props.navigation;
         fetch('http://115.124.111.239:8069/web/session/authenticate', {
         method: 'POST', 
         headers: {
@@ -42,8 +51,17 @@ class LoginView extends Component {
         .then((response) => response.json())
         .then((responseJson) => {
           //console.log(responseJson);
-          
-          console.log(responseJson.result);
+          if(responseJson.result == null) {
+              alert("Invalid credentails" );
+          } else {
+             alert("Successfully Login")
+          //  console.log(responseJson.result);
+          //  navigate('ApiContainer');
+             console.log(responseJson.result);
+             Keyboard.dismiss();
+            this.toast.show("Company name and ID:"+responseJson.result.user_companies.current_company, DURATION.FOREVER);
+           // Toast.show('hello world!', DURATION.FOREVER);
+          }
         })
         .catch((error) => {
             console.log("Error occur:" +error);
@@ -53,6 +71,7 @@ class LoginView extends Component {
    render() {
       return (
          <View style = {styles.container}>
+
             <TextInput style = {styles.input}
                underlineColorAndroid = "transparent"
                placeholder = "Email"
@@ -72,6 +91,8 @@ class LoginView extends Component {
                onPress = {() => this.goForFetch(this.state.email, this.state.password) }>
                <Text style = {styles.submitButtonText}> Submit </Text>
             </TouchableOpacity>
+
+            <Toast ref={ref => { this.toast = ref; }} />
          </View>
       )
    }

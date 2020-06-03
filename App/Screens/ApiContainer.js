@@ -36,7 +36,7 @@ class ApiContainer extends Component {
 	        "method": "call",
 	        "params": {
 		      "model": "res.users",
-		      "fields": ["partner_id", "display_name", "login", "company_id", "email",                     "product_categ_ids", "employee_ids"],
+		      "fields": ["partner_id", "display_name", "login", "company_id", "email", "product_categ_ids", "employee_ids"],
 		      "domain": [["id", "=", 2]],
 		      "offset": 0,
 		      "limit": 0,
